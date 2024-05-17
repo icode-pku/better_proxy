@@ -111,7 +111,11 @@ def write_config_json(the_total_dict, config_path):
 
     # 写入JSON文件
     with open(config_path, "w") as f:
-        json.dump(data, f)
+        json.dump(
+            data,
+            f,
+            indent=4,
+        )
     pass
 
 
@@ -202,7 +206,7 @@ def measure_start(proxy):
 # 启动Xray 测试网络 以ping google为基准
 def xray_start():
     result = subprocess.run(
-        ["./Xray/xray > /dev/null 2>&1 &"],
+        ["./xray_bin/xray > /dev/null 2>&1 &"],
         shell=True,
         stderr=subprocess.PIPE,
         cwd="./",
@@ -211,6 +215,9 @@ def xray_start():
         print(result.stderr)
     else:
         print("xray service started...")
+
+    # process = subprocess.Popen("./Xray/xray > /dev/null 2>&1 &", shell=True)
+    #      process.kill()
 
     proxy = "http://127.0.0.1:10809"
     os.environ["http_proxy"] = proxy
@@ -321,7 +328,7 @@ if __name__ == "__main__":
     url_dict = read_vmess(url)
     print(url_dict)
     the_total_dict = write_vmess_args(url_dict)
-    config_path = "./Xray/config.json"
+    config_path = "./xray_bin/config.json"
     write_config_json(the_total_dict, config_path)
 
     """
