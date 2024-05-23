@@ -1,0 +1,153 @@
+{
+    "log": {
+        "access": "",
+        "error": "",
+        "loglevel": "warning"
+    },
+    "inbounds": [
+        {
+            "tag": "socks",
+            "port": 60027,
+            "listen": "0.0.0.0",
+            "protocol": "socks",
+            "sniffing": {
+                "enabled": true,
+                "destOverride": [
+                    "http",
+                    "tls"
+                ],
+                "routeOnly": false
+            },
+            "settings": {
+                "auth": "noauth",
+                "udp": true,
+                "allowTransparent": false
+            }
+        },
+        {
+            "tag": "http",
+            "port": 60028,
+            "listen": "0.0.0.0",
+            "protocol": "http",
+            "sniffing": {
+                "enabled": true,
+                "destOverride": [
+                    "http",
+                    "tls"
+                ],
+                "routeOnly": false
+            },
+            "settings": {
+                "auth": "noauth",
+                "udp": true,
+                "allowTransparent": false
+            }
+        }
+    ],
+    "outbounds": [
+        {
+            "tag": "proxy",
+            "protocol": "vmess",
+            "settings": {
+                "vnext": [
+                    {
+                        "address": "t.cnmjcn.cyou",
+                        "port": 16616,
+                        "users": [
+                            {
+                                "id": "c3382d8a-2c92-4468-985b-87f4203b71b2",
+                                "alterId": 0,
+                                "email": "t@t.tt",
+                                "security": "auto"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "streamSettings": {
+                "network": "ws",
+                "wsSettings": {
+                    "path": "/",
+                    "headers": {
+                        "Host": "25a22a928d882c4614d03a2d3135280e.mobgslb.tbcache.com"
+                    }
+                }
+            },
+            "mux": {
+                "enabled": false,
+                "concurrency": -1
+            }
+        },
+        {
+            "tag": "direct",
+            "protocol": "freedom",
+            "settings": {}
+        },
+        {
+            "tag": "block",
+            "protocol": "blackhole",
+            "settings": {
+                "response": {
+                    "type": "http"
+                }
+            }
+        }
+    ],
+    "routing": {
+        "domainStrategy": "AsIs",
+        "rules": [
+            {
+                "type": "field",
+                "inboundTag": [
+                    "api"
+                ],
+                "outboundTag": "api",
+                "enabled": true
+            },
+            {
+                "id": "5528768168238290434",
+                "type": "field",
+                "outboundTag": "direct",
+                "domain": [
+                    "domain:edu.cn"
+                ],
+                "enabled": true
+            },
+            {
+                "id": "5548617115199694968",
+                "type": "field",
+                "outboundTag": "block",
+                "domain": [
+                    "geosite:category-ads-all"
+                ],
+                "enabled": true
+            },
+            {
+                "id": "5416564785918982992",
+                "type": "field",
+                "outboundTag": "direct",
+                "domain": [
+                    "geosite:cn"
+                ],
+                "enabled": true
+            },
+            {
+                "id": "5087601095663191336",
+                "type": "field",
+                "outboundTag": "direct",
+                "ip": [
+                    "geoip:private",
+                    "geoip:cn"
+                ],
+                "enabled": true
+            },
+            {
+                "id": "5363368863254177015",
+                "type": "field",
+                "port": "0-65535",
+                "outboundTag": "proxy",
+                "enabled": true
+            }
+        ]
+    }
+}
