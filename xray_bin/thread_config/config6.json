@@ -7,7 +7,7 @@
     "inbounds": [
         {
             "tag": "socks",
-            "port": 10808,
+            "port": 60021,
             "listen": "0.0.0.0",
             "protocol": "socks",
             "sniffing": {
@@ -26,7 +26,7 @@
         },
         {
             "tag": "http",
-            "port": 10809,
+            "port": 60022,
             "listen": "0.0.0.0",
             "protocol": "http",
             "sniffing": {
@@ -51,7 +51,7 @@
             "settings": {
                 "servers": [
                     {
-                        "address": "uk.mjt000.com",
+                        "address": "jp.mjt000.com",
                         "method": "chacha20",
                         "ota": false,
                         "password": "c3382d8a-2c92-4468-985b-87f4203b71b2",
@@ -66,7 +66,7 @@
                 "security": "tls",
                 "tlsSettings": {
                     "allowInsecure": false,
-                    "serverName": "uk.mjt000.com",
+                    "serverName": "jp.mjt000.com",
                     "show": false
                 }
             },

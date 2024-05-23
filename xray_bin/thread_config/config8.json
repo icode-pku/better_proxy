@@ -7,7 +7,7 @@
     "inbounds": [
         {
             "tag": "socks",
-            "port": 10808,
+            "port": 60025,
             "listen": "0.0.0.0",
             "protocol": "socks",
             "sniffing": {
@@ -26,7 +26,7 @@
         },
         {
             "tag": "http",
-            "port": 10809,
+            "port": 60026,
             "listen": "0.0.0.0",
             "protocol": "http",
             "sniffing": {
@@ -47,27 +47,30 @@
     "outbounds": [
         {
             "tag": "proxy",
-            "protocol": "trojan",
+            "protocol": "vmess",
             "settings": {
-                "servers": [
+                "vnext": [
                     {
-                        "address": "uk.mjt000.com",
-                        "method": "chacha20",
-                        "ota": false,
-                        "password": "c3382d8a-2c92-4468-985b-87f4203b71b2",
-                        "port": 443,
-                        "level": 1,
-                        "flow": ""
+                        "address": "t.cnmjcn.cyou",
+                        "port": 16648,
+                        "users": [
+                            {
+                                "id": "c3382d8a-2c92-4468-985b-87f4203b71b2",
+                                "alterId": 0,
+                                "email": "t@t.tt",
+                                "security": "auto"
+                            }
+                        ]
                     }
                 ]
             },
             "streamSettings": {
-                "network": "tcp",
-                "security": "tls",
-                "tlsSettings": {
-                    "allowInsecure": false,
-                    "serverName": "uk.mjt000.com",
-                    "show": false
+                "network": "ws",
+                "wsSettings": {
+                    "path": "/",
+                    "headers": {
+                        "Host": "25a22a928d882c4614d03a2d3135280e.mobgslb.tbcache.com"
+                    }
                 }
             },
             "mux": {
