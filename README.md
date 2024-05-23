@@ -3,7 +3,7 @@
 Ubuntu22.04 64位  
 python3.10
 
-## test.py目前实现的功能:
+## main.py目前实现的功能:
 
 1)获取server url
 
@@ -11,5 +11,7 @@ python3.10
 
 3)修改config
 
-4)python运行Xray
+4)自动化根据延迟切换proxy，运行Xray
+
+5）每隔一定时间进行proxy test 
 
