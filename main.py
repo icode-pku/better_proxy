@@ -362,19 +362,26 @@ if __name__ == "__main__":
     py_config_path = "./config/py_config.json"
     url_proxies = ""  # random Initial value
     t1_exc_sleep = 10000  # random Initial value
+    json_data = None
     try:
         # 读取JSON文件
         with open(py_config_path, "r") as f:
-            data = json.load(f)
+            json_data = json.load(f)
 
-        if data["url"] == "" or data["time"] == "":
+        if json_data["url"] == "" or json_data["time"] == "":
             exit()
         else:
             # read data from json
-            url_proxies = data["url"]
-            t1_exc_sleep = data["time"]
+            url_proxies = json_data["url"]
+            t1_exc_sleep = json_data["time"]
     except:
-        data = {"url": "http://example.com", "time": 10}
+        data = {
+            "url": "https://example.com",
+            "time": 10,
+            "port": 10809,
+            "sleep_time": 1,
+            "help_proxy": "http://example.com:10809",
+        }
         with open(py_config_path, "w") as f:
             json.dump(
                 data,
@@ -407,9 +414,12 @@ if __name__ == "__main__":
             if (
                 reconnect_times % 10 == 0
             ):  # if the current xray proxy is not working well, you can use a user-defined proxy every 10 times
-                proxy = "http://172.16.102.21:10809"  # your proxy
+                if "help_proxy" in json_data:
+                    proxy = json_data["help_proxy"]  # your proxy
+                else:
+                    proxy = "http://127.0.0.1:" + str(json_data["port"])
             else:
-                proxy = "http://127.0.0.1:10809"
+                proxy = "http://127.0.0.1:" + str(json_data["port"])
             try:
                 response = requests.get(
                     url_proxies,
@@ -432,6 +442,7 @@ if __name__ == "__main__":
                     )
             except:
                 print("http request timeout...retrying...")
+                time.sleep(data["sleep_time"])
 
         decoded_content_url = base64.b64decode(encoded_content_url)
 

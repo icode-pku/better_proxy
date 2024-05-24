@@ -1,2 +1,4 @@
-requests==2.31.0
+requests
 prettytable
+
+sudo docker build  -t better_proxy:v1.0 -f dockerfile/image.dockerfile  .  # 基于dockerfile构建镜像
