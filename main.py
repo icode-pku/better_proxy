@@ -444,6 +444,7 @@ if __name__ == "__main__":
         reconnect_times = 0
         while flag == False:
             reconnect_times += 1
+
             if (
                 reconnect_times % 10 == 0
             ):  # if the current xray proxy is not working well, you can use a user-defined proxy every 10 times
@@ -475,7 +476,10 @@ if __name__ == "__main__":
                     )
             except:
                 print("http request timeout...retrying...")
-                time.sleep(time_request_sleep)
+                time.sleep(1)
+                if reconnect_times % 10 == 0:
+                    reconnect_times = 0
+                    time.sleep(time_request_sleep)
 
         decoded_content_url = base64.b64decode(encoded_content_url)
 
