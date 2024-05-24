@@ -391,14 +391,27 @@ if __name__ == "__main__":
             )
             tb.align = "c"  # align : l c r
             print(tb)
+            tb1 = PrettyTable()
+            tb1.field_names = [
+                "help_proxy",
+                "host_port",
+            ]
+            tb1.add_row(
+                [
+                    json_data["help_proxy"],
+                    json_data["host_port"],
+                ]
+            )
+            tb1.align = "c"  # align : l c r
+            print(tb1)
             print(
                 "you can customize above parameters by manually modifying the json file..."
             )
     except:
         data = {
             "url": "https://example.com",
-            "exc_sleep_time": 10,
-            "port": 10809,
+            "exc_sleep_time": 100,
+            "host_port": 10809,
             "sleep_time": 2,
             "help_proxy": "http://example.com:10809",
         }
@@ -437,9 +450,9 @@ if __name__ == "__main__":
                 if "help_proxy" in json_data:
                     proxy = json_data["help_proxy"]  # your proxy
                 else:
-                    proxy = "http://127.0.0.1:" + str(json_data["help_proxy_port"])
+                    proxy = "http://127.0.0.1:" + str(json_data["host_port"])
             else:
-                proxy = "http://127.0.0.1:" + str(json_data["help_proxy_port"])
+                proxy = "http://127.0.0.1:" + str(json_data["host_port"])
             try:
                 response = requests.get(
                     url_proxies,
