@@ -6,10 +6,10 @@ RUN apt-get update
 RUN apt-get install -f
 RUN apt-get install -y wget
 RUN apt-get install -y python3 python3-pip
-RUN wget https://github.com/icode-pku/better_proxy/archive/refs/tags/v1.1.0.tar.gz
+RUN wget https://github.com/icode-pku/better_proxy/archive/refs/tags/v1.1.1.tar.gz
 
-RUN tar -xavf ./v1.1.0.tar.gz
-RUN mv better_proxy-1.1.0 better_proxy
+RUN tar -xavf ./v1.1.1.tar.gz
+RUN mv better_proxy-1.1.1 better_proxy
 
 WORKDIR /better_proxy
 
