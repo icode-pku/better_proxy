@@ -361,7 +361,8 @@ def quene_thread_exc(thread_id, thread_path, port, url_for_test):
 if __name__ == "__main__":
     py_config_path = "./config/py_config.json"
     url_proxies = ""  # random Initial value
-    t1_exc_sleep = 10000  # random Initial value
+    time_exc_sleep = 10000  # random Initial value
+    time_request_sleep = 10  # random Initial value
     json_data = None
     try:
         # 读取JSON文件
@@ -373,11 +374,12 @@ if __name__ == "__main__":
         else:
             # read data from json
             url_proxies = json_data["url"]
-            t1_exc_sleep = json_data["time"]
+            time_exc_sleep = json_data["exc_sleep_time"]
+            time_request_sleep = json_data["sleep_time"]
     except:
         data = {
             "url": "https://example.com",
-            "time": 10,
+            "exc_sleep_time": 10,
             "port": 10809,
             "sleep_time": 1,
             "help_proxy": "http://example.com:10809",
@@ -442,7 +444,7 @@ if __name__ == "__main__":
                     )
             except:
                 print("http request timeout...retrying...")
-                time.sleep(data["sleep_time"])
+                time.sleep(time_request_sleep)
 
         decoded_content_url = base64.b64decode(encoded_content_url)
 
@@ -605,7 +607,7 @@ if __name__ == "__main__":
         print("the proxy test service is sleeping...")
         print(
             "The next proxy node replacement will take place {:.4f} hours later...".format(
-                t1_exc_sleep / 3600
+                time_exc_sleep / 3600
             )
         )
-        time.sleep(t1_exc_sleep)
+        time.sleep(time_exc_sleep)
