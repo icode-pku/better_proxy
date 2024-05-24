@@ -47,27 +47,27 @@
     "outbounds": [
         {
             "tag": "proxy",
-            "protocol": "trojan",
+            "protocol": "vmess",
             "settings": {
-                "servers": [
+                "vnext": [
                     {
-                        "address": "uk.mjt000.com",
-                        "method": "chacha20",
-                        "ota": false,
-                        "password": "c3382d8a-2c92-4468-985b-87f4203b71b2",
-                        "port": 443,
-                        "level": 1,
-                        "flow": ""
+                        "address": "t.cnmjcn.cyou",
+                        "port": 16617,
+                        "users": [
+                            {
+                                "id": "c3382d8a-2c92-4468-985b-87f4203b71b2",
+                                "alterId": 0,
+                                "email": "t@t.tt",
+                                "security": "auto"
+                            }
+                        ]
                     }
                 ]
             },
             "streamSettings": {
-                "network": "tcp",
-                "security": "tls",
-                "tlsSettings": {
-                    "allowInsecure": false,
-                    "serverName": "uk.mjt000.com",
-                    "show": false
+                "network": "ws",
+                "wsSettings": {
+                    "headers": {}
                 }
             },
             "mux": {

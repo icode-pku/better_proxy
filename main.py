@@ -343,7 +343,6 @@ def quene_thread_exc(thread_id, thread_path, port, url_for_test):
         xray_path = "./xray_bin/xray"
         config_path = thread_path + "config{}.json".format(thread_id)
         write_config_json(the_total_dict, config_path, port)
-        write_config_json(the_total_dict, "./config/default_config.json", port)
         process = xray_start(xray_path, config_path)
 
         latency_proxy, time_proxy, bandwidth_proxy = measure_start(port, url_for_test)
@@ -629,6 +628,7 @@ if __name__ == "__main__":
             xray_path = "./xray_bin/xray"
             config_path = "./xray_bin/config.json"
             write_config_json(the_selected_dict, config_path, 10809)
+            write_config_json(the_selected_dict, "./config/default_config.json", 10809)
             process0 = xray_start(xray_path, config_path)
             if process0.stderr:
                 print(process0.stderr)
