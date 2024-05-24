@@ -300,9 +300,7 @@ def get_score(latency_proxy, time_proxy, bandwidth_proxy):
 
 # print all the proxy test information
 def print_prettytable(total_url_list):
-    # 创建Prettytable实例
     tb = PrettyTable()
-    # 添加表头
     tb.field_names = [
         "Name",
         "Type",
@@ -369,19 +367,39 @@ if __name__ == "__main__":
         with open(py_config_path, "r") as f:
             json_data = json.load(f)
 
-        if json_data["url"] == "" or json_data["time"] == "":
-            exit()
-        else:
             # read data from json
             url_proxies = json_data["url"]
             time_exc_sleep = json_data["exc_sleep_time"]
             time_request_sleep = json_data["sleep_time"]
+            print(
+                "the following paramters come from your mkdir [{}]:".format(
+                    py_config_path
+                )
+            )
+            tb = PrettyTable()
+            tb.field_names = [
+                "proxy_test_sleep_time(h)",
+                "request_sleep_time(s)",
+                "proxy_url",
+            ]
+            tb.add_row(
+                [
+                    "{:.4f}".format(time_exc_sleep / 3600),
+                    time_request_sleep,
+                    url_proxies,
+                ]
+            )
+            tb.align = "c"  # align : l c r
+            print(tb)
+            print(
+                "you can customize above parameters by manually modifying the json file..."
+            )
     except:
         data = {
             "url": "https://example.com",
             "exc_sleep_time": 10,
             "port": 10809,
-            "sleep_time": 1,
+            "sleep_time": 2,
             "help_proxy": "http://example.com:10809",
         }
         with open(py_config_path, "w") as f:
@@ -398,7 +416,7 @@ if __name__ == "__main__":
         exit()
 
     xray_path = "./xray_bin/xray"
-    config_path = "./xray_bin/config.json"
+    config_path = "./config/default_config.json"  # here you can use your config.json for first xray start ，
     process0 = xray_start(xray_path, config_path)
     os.environ["http_proxy"] = "http://127.0.0.1:10809"
     os.environ["https_proxy"] = "http://127.0.0.1:10809"
@@ -419,9 +437,9 @@ if __name__ == "__main__":
                 if "help_proxy" in json_data:
                     proxy = json_data["help_proxy"]  # your proxy
                 else:
-                    proxy = "http://127.0.0.1:" + str(json_data["port"])
+                    proxy = "http://127.0.0.1:" + str(json_data["help_proxy_port"])
             else:
-                proxy = "http://127.0.0.1:" + str(json_data["port"])
+                proxy = "http://127.0.0.1:" + str(json_data["help_proxy_port"])
             try:
                 response = requests.get(
                     url_proxies,

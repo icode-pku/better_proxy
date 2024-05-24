@@ -51,8 +51,8 @@
             "settings": {
                 "vnext": [
                     {
-                        "address": "m.cnmjin.net",
-                        "port": 16620,
+                        "address": "yes.cnmjcn.net",
+                        "port": 16626,
                         "users": [
                             {
                                 "id": "c3382d8a-2c92-4468-985b-87f4203b71b2",

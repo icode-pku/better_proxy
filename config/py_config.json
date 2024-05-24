@@ -1,7 +1,7 @@
 {
     "url":"https://moje.mojieurl.com/api/v1/client/subscribe?token=7b7c590e2dbd44a1e1aceb72c4e40d6f",
-    "exc_sleep_time":10,
-    "port": 10809,
-    "sleep_time": 1,
+    "exc_sleep_time":100,
+    "help_proxy_port": 10809,
+    "sleep_time": 2,
     "help_proxy":"http://172.16.102.21:10809"
 }

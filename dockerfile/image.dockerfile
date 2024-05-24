@@ -17,6 +17,8 @@ RUN pip3 install -r requirement.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
 ENV http_proxy="http://127.0.0.1:10809"
 ENV https_proxy="http://127.0.0.1:10809"
 
+RUN chmod +x xray_bin/xray
+
 RUN echo "start to run better_proxy"
 
 ENTRYPOINT ["/bin/bash", "-c"]
@@ -30,3 +32,4 @@ CMD ["python3 main.py"]
 # export http_proxy="http://127.0.0.1:10809"
 # export https_proxy="http://127.0.0.1:10809"
 # curl www.google.com # 有内容即正确
+
