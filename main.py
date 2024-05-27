@@ -686,6 +686,7 @@ if __name__ == "__main__":
                     if response.status_code == 200:
                         print("Times:{}  check net well...".format(i + 1))
                         flag_check_net = True
+                        check_error = 0
                         break
                         # encoded_content_url = response.text
                     else:
