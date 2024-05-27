@@ -9,12 +9,15 @@ import os
 from prettytable import PrettyTable
 import threading
 import queue
+from operator import itemgetter
 import urllib3
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-total_url_list = list()  # 用于储存已测试结果的所有url的信息
-q = queue.Queue()  # FIFO 用于线程访问所有url的信息
+total_url_list = list()  # Used to store information for all urls of the test results
+q = (
+    queue.Queue()
+)  # FIFO quene that is used for threads to access information for all urls
 
 
 # parse trojan url parameters, return url_trojan_dict
@@ -28,7 +31,9 @@ def read_trojan(url_trojan):
 
 # fill trojan parameters, return the_total_dict
 def write_trojan_args(url_trojan_dict):
-    the_total_dict = dict()  # config.json中“outbounds”list中的第一个dict元素
+    the_total_dict = (
+        dict()
+    )  # The first dict element in the "outbounds" list in "config.json"
     the_total_dict["tag"] = "proxy"
     the_total_dict["protocol"] = "trojan"
     the_total_dict["settings"] = {
@@ -70,7 +75,7 @@ def read_vmess(url_vmess):
 
 # fill vmess parameters, return the_total_dict
 def write_vmess_args(url_vmess_dict):
-    the_total_dict = dict()  # config.json中“outbounds”list中的第一个dict元素
+    the_total_dict = dict()
     the_total_dict["tag"] = "proxy"
     the_total_dict["protocol"] = "vmess"
     the_total_dict["settings"] = {
@@ -110,16 +115,16 @@ def write_vmess_args(url_vmess_dict):
 
 # update specified config for xray
 def write_config_json(the_total_dict, config_path, port):
-    # 读取JSON文件
+    # read json
     with open(config_path, "r") as f:
         data = json.load(f)
 
-    # 修改数据
+    # update data
     data["outbounds"][0] = the_total_dict
     data["inbounds"][0]["port"] = port - 1
     data["inbounds"][1]["port"] = port
 
-    # 写入JSON文件
+    # write back
     with open(config_path, "w") as f:
         json.dump(
             data,
@@ -130,13 +135,12 @@ def write_config_json(the_total_dict, config_path, port):
 
 # test latency
 def measure_latency(proxy, url):
-    # 构建目标 URL
+    # create URL
     flag = False
     Time_connect = 0
     while flag == False and Time_connect < 3:
         Time_connect += 1
         try:
-            # 发送请求
             start_time = time.time()
             response = requests.get(
                 url,
@@ -145,19 +149,19 @@ def measure_latency(proxy, url):
                 proxies={"http": proxy, "https": proxy},
             )
             end_time = time.time()
-            # 测量延迟
+            # test latency
             """ print("latency test started...") """
             if response.status_code == 200:
-                # 打印响应内容
+                # print the request content
                 # print("response2 text:",response.text)
                 flag = True
-                # 打印延迟
+                # print latency
                 """ print("latency:", int(response.elapsed.total_seconds() * 1000)) """
-                # return int(response.elapsed.total_seconds() * 1000), Time_connect   # 计入dns时间
+                # return int(response.elapsed.total_seconds() * 1000), Time_connect   # consider dns consume time
                 return (
                     int((end_time - start_time) * 1000),
                     Time_connect,
-                )  # 未计入 dns时间
+                )  # not consider dns consume time
             else:
                 """print(response.reason)
                 print("Failed to request...retrying...")"""
@@ -175,7 +179,7 @@ def test_proxy_bandwidth(proxy, url):
         "https://github.com",
         "https://github.com",
     ]
-    # 分别测试k次，以便于计算平均带宽
+    # k test times in order to calculate the average bandwidth
     k = 2
     download_times = []
     download_sizes = []
@@ -193,7 +197,7 @@ def test_proxy_bandwidth(proxy, url):
                     proxies={"http": proxy, "https": proxy},
                 )
                 end_time = time.time()
-                # 检查响应是否成功
+
                 if response.status_code == 200:
                     flag = True
                     download_time = end_time - start_time
@@ -216,14 +220,14 @@ def test_proxy_bandwidth(proxy, url):
             download_sizes.append(0)
             download_times.append(0)
 
-    # 计算平均带宽（单位：MB/秒）
+    # calculate the average bandwidth（MB/s）
     if download_times:
         download_speed = (
             (download_sizes[1] - download_sizes[0])
             / (download_times[1] - download_times[0])
             / 1024
             / 1024
-        )  # 单位转换为MB/s
+        )  # The unit is converted to MB/s
         # print(f"Average Bandwidth: {download_speed:.2f} MB/s")
         return download_speed
 
@@ -362,15 +366,17 @@ if __name__ == "__main__":
     time_exc_sleep = 10000  # random Initial value
     time_request_sleep = 10  # random Initial value
     json_data = None
+    time_check_net_well = 100
     try:
-        # 读取JSON文件
+        # read json
         with open(py_config_path, "r") as f:
             json_data = json.load(f)
 
             # read data from json
             url_proxies = json_data["url"]
             time_exc_sleep = json_data["exc_sleep_time"]
-            time_request_sleep = json_data["sleep_time"]
+            time_request_sleep = json_data["request_sleep_time"]
+            time_check_net_well = json_data["check_net_well_time"]
             print(
                 "the following paramters come from your mkdir [{}]:".format(
                     py_config_path
@@ -378,15 +384,15 @@ if __name__ == "__main__":
             )
             tb = PrettyTable()
             tb.field_names = [
+                "request_sleep_time(h)",
                 "proxy_test_sleep_time(h)",
-                "request_sleep_time(s)",
-                "proxy_url",
+                "check_net_well_time(h)",
             ]
             tb.add_row(
                 [
+                    "{:.4f}".format(time_request_sleep / 3600),
                     "{:.4f}".format(time_exc_sleep / 3600),
-                    time_request_sleep,
-                    url_proxies,
+                    "{:.4f}".format(time_check_net_well / 3600),
                 ]
             )
             tb.align = "c"  # align : l c r
@@ -410,7 +416,8 @@ if __name__ == "__main__":
     except:
         data = {
             "url": "https://example.com",
-            "exc_sleep_time": 100,
+            "exc_sleep_time": 10000,
+            "check_net_well_time": 100,
             "host_port": 10809,
             "sleep_time": 2,
             "help_proxy": "http://example.com:10809",
@@ -435,6 +442,7 @@ if __name__ == "__main__":
     os.environ["https_proxy"] = "http://127.0.0.1:10809"
 
     while True:
+        total_url_list.clear()  # reset
         proxy = "http://127.0.0.1:10809"
         # url_proxies = "https://moje.mojieurl.com/api/v1/client/subscribe?token=7b7c590e2dbd44a1e1aceb72c4e40d6f"
         print("the proxy test service started...")
@@ -444,7 +452,6 @@ if __name__ == "__main__":
         reconnect_times = 0
         while flag == False:
             reconnect_times += 1
-
             if (
                 reconnect_times % 10 == 0
             ):  # if the current xray proxy is not working well, you can use a user-defined proxy every 10 times
@@ -522,8 +529,9 @@ if __name__ == "__main__":
                 # total_url_list.append(single_url_dict2)
                 q.put(single_url_dict2)
 
+        num_urls = q.qsize()
         print("the url number is as follows:")
-        print(q.qsize())
+        print(num_urls)
 
         print("proxy test started...")
 
@@ -588,7 +596,7 @@ if __name__ == "__main__":
             the_selected_dict = write_trojan_args(url_dict)
 
         # determines whether the selected proxy is the current proxy
-        # 读取JSON文件
+        # read json
         flag_same_proxy = False
         with open(config_path, "r") as f:
             data = json.load(f)
@@ -637,8 +645,6 @@ if __name__ == "__main__":
             else:
                 print("xray service restarted successfully...")
 
-        # process0.kill()
-
         # the proxy test service sleeping
         print("the proxy test service is sleeping...")
         print(
@@ -646,4 +652,84 @@ if __name__ == "__main__":
                 time_exc_sleep / 3600
             )
         )
-        time.sleep(time_exc_sleep)
+
+        # check net work well or not
+
+        sorted_url_list = sorted(total_url_list, key=itemgetter("score"), reverse=True)
+        # print_prettytable(sorted_url_list)
+        """  {
+            "name": "",
+            "url": "vmess://",
+            "type": "vmess",
+            "latency": ,
+            "time": ,
+            "bandwidth": 0,
+            "score": 13.054867,
+        } """
+
+        print(proxy)
+        check_error = 0
+        available_url_id = 1
+        for i in range(
+            int((time_exc_sleep + time_check_net_well - 1) / time_check_net_well)
+        ):
+            flag_check_net = False
+            for _ in range(10):
+                try:
+                    response = requests.get(
+                        url_proxies,
+                        verify=False,
+                        timeout=20,
+                        proxies={"http": proxy, "https": proxy},
+                    )
+                    if response.status_code == 200:
+                        print("Times:{}  check net well...".format(i + 1))
+                        flag_check_net = True
+                        break
+                        # encoded_content_url = response.text
+                    else:
+                        print(
+                            f"Failed to retrieve the webpage: Status code {response.status_code}"
+                        )
+                except:
+                    # net work not well, recheck
+                    time.sleep(1)
+
+            if flag_check_net == False:
+                print("Times:{}  check net not well...warning...".format(i + 1))
+                check_error += 1
+            if check_error == 3:  #
+                check_error = 0  # reset
+                print("the currnt proxy work not well, need update...")
+                process0.kill()
+                url_dict_temp = sorted_url_list[available_url_id]
+                available_url_id = (available_url_id + 1) % num_urls
+                the_selected_dict1 = {}
+                if url_dict_temp["type"] == "vmess":
+                    url_dict = read_vmess(url_dict_temp["url"])
+                    the_selected_dict1 = write_vmess_args(url_dict)
+                else:
+                    url_dict = read_trojan(url_dict_temp["url"])
+                    the_selected_dict1 = write_trojan_args(url_dict)
+                xray_path = "./xray_bin/xray"
+                config_path = "./xray_bin/config.json"
+                write_config_json(the_selected_dict1, config_path, 10809)
+                write_config_json(
+                    the_selected_dict1, "./config/default_config.json", 10809
+                )
+                process0 = xray_start(xray_path, config_path)
+                print("proxy update finished...")
+
+                print("the current proxy is as follows:")
+                url_dict_temp_list = list()
+                url_dict_temp_list.append(url_dict_temp)
+                print_prettytable(url_dict_temp_list)
+
+                if process0.stderr:
+                    print(process0.stderr)
+                    print("Please restart manually...")
+                    exit()
+                else:
+                    print("xray service restarted successfully...")
+
+            time.sleep(time_check_net_well)
