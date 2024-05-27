@@ -416,10 +416,10 @@ if __name__ == "__main__":
     except:
         data = {
             "url": "https://example.com",
-            "exc_sleep_time": 10000,
-            "check_net_well_time": 100,
+            "exc_sleep_time": 36000,
+            "check_net_well_time": 3600,
             "host_port": 10809,
-            "sleep_time": 2,
+            "request_sleep_time": 1800,
             "help_proxy": "http://example.com:10809",
         }
         with open(py_config_path, "w") as f:
@@ -445,6 +445,7 @@ if __name__ == "__main__":
         total_url_list.clear()  # reset
         proxy = "http://127.0.0.1:10809"
         # url_proxies = "https://moje.mojieurl.com/api/v1/client/subscribe?token=7b7c590e2dbd44a1e1aceb72c4e40d6f"
+        # inner_proxy = "http://172.16.102.21:10809"
         print("the proxy test service started...")
         print("getting the results of http request for urls...")
         encoded_content_url = ""  # get the results of http request
