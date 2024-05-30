@@ -28,10 +28,3 @@ ENTRYPOINT ["/bin/bash", "-c"]
 
 ### -v $host/config:/better_proxy/config
 CMD ["python3 main.py"]
-
-# sudo docker build --no-cache  -t better_proxy_test -f dockerfile/image.dockerfile  .  # 基于dockerfile构建镜像
-# sudo docker run -dt --name our_proxy -p 10909:10809  -v /home/niupeiyu/config:/better_proxy/config  better_proxy_test   # 构建容器
-
-# export http_proxy="http://127.0.0.1:10909"
-# export https_proxy="http://127.0.0.1:10909"
-# curl www.google.com 
