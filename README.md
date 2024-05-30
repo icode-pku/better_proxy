@@ -1,5 +1,5 @@
 # 项目名称：better_proxy
-该项目为一个服务器网络自动切换工具，旨在Ubuntu系统上进行部署，实现全自动定时切换外部服务器网络，保证系统访问网络良好
+该项目为一个服务器网络自动切换工具，旨在Ubuntu系统20.04/22.04本地服务器上进行部署，实现全自动定时切换外部服务器网络，保证系统访问网络良好
 
 
 ## 一、本项目开发环境: 
@@ -8,7 +8,7 @@
 
 ## 二、版本更新：
 
-## 1.0.0 版本发布：
+### 1.0.0 版本发布：
 初始版本发布功能如下：
 
 1）获取用户定义的server urls并解析；
@@ -59,6 +59,12 @@ sudo docker build -t [your_image_name] -f [your_dockerfile_path]  .
 ```
 sudo docker build -t demo_image_name -f dockerfile/image.dockerfile  . 
 ```
+
+注：如果构建时ubuntu20.04下载不了，你可以先运行如下命令：
+```
+docker pull ubuntu:20.04
+```
+
 ### 基于镜像构建容器
 命令格式：<br>
 ```
