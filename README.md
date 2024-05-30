@@ -29,63 +29,63 @@
 ## 三、项目使用流程
 
 ### 下载dockerfile文件
-首先你需要从本项目上下载dockerfile文件和config目录文件放置在你的linux系统中/home下的用户目录中：
-1）下载完成后config目录的放置路径便是下面步骤中的[host_config_path]，
+首先你需要从本项目上下载dockerfile文件和config目录文件放置在你的linux系统中/home下的用户目录中：<br>
+1）下载完成后config目录的放置路径便是下面步骤中的[host_config_path]，<br>
 
 2）在运行项目前，你需要配置config/py_config.json文件；
-这里给出了模板参数：
-    "url": "http://example.com", //表示获取存储所有服务器网络信息的url，必填参数
-    "exc_sleep_time": 86400, //表示切换网络的间隔时间（秒）
-    "check_net_well_time": 3600, //表示检测网络的间隔时间（秒）
-    "host_port": 10809, //默认端口号，不要轻易更改，多次请求获取存储所有网络信息的url网址失败，并且在你没有内部服务器网络时，如果你在本机127.0.0.1上别的端口号设置有网络，可以更改这一端口
-    "request_sleep_time": 1800, //请求网址失败停止等待时间（秒）
-    "help_proxy": "http://example.com" //多次请求获取存储所有服务器网络信息的url网址失败时可以选择使用你个人的网络进行再次请求，若没有内部服务器网络，请务必删除"help_proxy"这一键值对
+这里给出了模板参数：<br>
+    "url": "http://example.com", //表示获取存储所有服务器网络信息的url，必填参数<br>
+    "exc_sleep_time": 86400, //表示切换网络的间隔时间（秒）<br>
+    "check_net_well_time": 3600, //表示检测网络的间隔时间（秒）<br>
+    "host_port": 10809, //默认端口号，不要轻易更改，多次请求获取存储所有网络信息的url网址失败，并且在你没有内部服务器网络时，如果你在本机127.0.0.1上别的端口号设置有网络，可以更改这一端口<br>
+    "request_sleep_time": 1800, //请求网址失败停止等待时间（秒）<br>
+    "help_proxy": "http://example.com" //多次请求获取存储所有服务器网络信息的url网址失败时可以选择使用你个人的网络进行再次请求，若没有内部服务器网络，请务必删除"help_proxy"这一键值对<br>
 
-3）config/default_config.json已经为你配置好了，该文件仅用于存储项目初始运行所使用的网络配置信息，当然你也可以有自己的配置文件进行内容参数替换，后续网络切换均会覆盖这一配置文件。
+3）config/default_config.json已经为你配置好了，该文件仅用于存储项目初始运行所使用的网络配置信息，当然你也可以有自己的配置文件进行内容参数替换，后续网络切换均会覆盖这一配置文件。<br>
 
 
 ### 基于dockerfile构建镜像
-命令格式：
+命令格式：<br>
 ```
 sudo docker build -t [your_image_name] -f [your_dockerfile_path]  . 
 ```
 这里注意命令末尾有个  **.**
 
-说明：
-**[your_image_name]**：为你所要构建镜像的名称
-**[your_dockerfile_path]**：为你要构建镜像所使用的dockerfile的路径
+说明：<br>
+**[your_image_name]**：为你所要构建镜像的名称<br>
+**[your_dockerfile_path]**：为你要构建镜像所使用的dockerfile的路径<br>
 
-示例：
+示例：<br>
 ```
 sudo docker build -t demo_image_name -f dockerfile/image.dockerfile  . 
 ```
 ### 基于镜像构建容器
-命令格式：
+命令格式：<br>
 ```
 sudo docker run -dt --name [your_container_name] -p [host_port]:10809  -v [host_config_path]:/better_proxy/config [your_image_name] 
 ```
-说明：
-**[your_container_name]**：为你要构建容器的名称
-**[host_port]**：为你要进行映射的本机端口
-**[host_config_path]**：为你要进行映射的网络工具配置文件所在目录路径
-**[your_image_name]**：为上一步骤构建镜像的名称
+说明：<br>
+**[your_container_name]**：为你要构建容器的名称<br> 
+**[host_port]**：为你要进行映射的本机端口<br>
+**[host_config_path]**：为你要进行映射的网络工具配置文件所在目录路径<br>
+**[your_image_name]**：为上一步骤构建镜像的名称<br>
 
-示例：
+示例：<br>
 ```
 sudo docker run -dt --name demo_container_name -p 10809:10809  -v /home/Niko/config:/better_proxy/config  demo_image_name 
 ```
-参数说明：
--p：将主机端口**10809**映射到所构建docker容器的**10809**端口，若主机端口10809(默认选择)已被占用，可改用其他端口号
--v：将主机中网络配置文件所在目录/home/Niko/config映射到所构建docker容器的/better_proxy/config目录
+参数说明：<br>
+-p：将主机端口**10809**映射到所构建docker容器的**10809**端口，若主机端口10809(默认选择)已被占用，可改用其他端口号<br>
+-v：将主机中网络配置文件所在目录/home/Niko/config映射到所构建docker容器的/better_proxy/config目录<br>
 
 ### 设置本地端口
-命令格式：
+命令格式：<br>
 ```
 export http_proxy="http://127.0.0.1:[host_port]"
 export https_proxy="http://127.0.0.1:[host_port]"
 ```
-说明：
-**[host_port]**：要与上面步骤设置的主机端口保持一致
+说明：<br>
+**[host_port]**：要与上面步骤设置的主机端口保持一致<br>
 
 示例：
 ```
@@ -94,8 +94,8 @@ export https_proxy="http://127.0.0.1:10809"
 ```
 ### 测试网络是否良好 
 
-如果上面步骤均没有问题，便可以测试网络了，这里以google为例
-示例：
+如果上面步骤均没有问题，便可以测试网络了，这里以google为例<br>
+示例：<br>
 ```
 curl www.google.com 
 ```
