@@ -28,7 +28,7 @@
 
 ## 三、项目使用流程
 
-### 下载dockerfile文件
+### 配置config目录中的文件
 首先你需要从本项目上下载dockerfile文件和config目录文件放置在你的linux系统中/home下的用户目录中：<br>
 1）下载完成后config目录的放置路径便是下面步骤中的[host_config_path]，<br>
 
@@ -41,7 +41,7 @@
     "request_sleep_time": 1800, //请求网址失败停止等待时间（秒）<br>
     "help_proxy": "http://example.com" //多次请求获取存储所有服务器网络信息的url网址失败时可以选择使用你个人的网络进行再次请求，若没有内部服务器网络，请务必删除"help_proxy"这一键值对<br>
 
-3）config/default_config.json已经为你配置好了，该文件仅用于存储项目初始运行所使用的网络配置信息，当然你也可以有自己的配置文件进行内容参数替换，后续网络切换均会覆盖这一配置文件。<br>
+3）config/default_config.json已经配置好了，该文件仅用于存储项目初始运行所使用的网络配置信息，当然你也可以有自己的配置文件进行内容参数替换，后续网络切换均会覆盖这一配置文件。<br>
 
 
 ### 基于dockerfile构建镜像
@@ -63,6 +63,35 @@ sudo docker build -t demo_image_name -f dockerfile/image.dockerfile  .
 注：如果构建时ubuntu20.04下载不了，你可以先运行如下命令：
 ```
 docker pull ubuntu:20.04
+```
+
+如果需要docker配置代理拉取镜像，参照如下方法：<br>
+**创建目录和文件**
+```
+mkdir /etc/systemd/system/docker.service.d/ 
+sudo vim /etc/systemd/system/docker.service.d/http-proxy.conf
+```
+**在http-proxy.conf中添加内容：**
+
+以下为示例，需要换成你自己的代理ip和端口
+```
+[Service]
+Environment="HTTP_PROXY=http://192.168.2.199:8118"
+Environment="HTTPS_PROXY=http://192.168.2.199:8118"
+# 下面是不走代理的时候，可以不加。有私有仓库时，可以用来加私有仓库
+# Environment="NO_PROXY=localhost,127.0.0.1"
+```
+**重启docker**
+```
+sudo systemctl daemon-reload
+sudo systemctl restart docker
+```
+
+**检查代理**
+
+```
+# 可以看到刚才配置的代理
+docker info | grep -i proxy
 ```
 
 ### 基于镜像构建容器
@@ -106,3 +135,12 @@ export https_proxy="http://127.0.0.1:10809"
 curl www.google.com 
 ```
 
+### 附：构建镜像与容器脚本 
+构建脚本位于scripts/start.sh
+
+需要执行以下命令：
+```
+cd scripts/
+chmod +x start.sh
+```
+注：在配置好config信息和成功拉取到Ubuntu：20.04镜像后才能使用
