@@ -1,8 +1,8 @@
 {
-    "url": "https://example.com",
-    "exc_sleep_time": 36000,
+    "url": "http://example.com",
+    "exc_sleep_time": 86400,
     "check_net_well_time": 3600,
     "host_port": 10809,
     "request_sleep_time": 1800,
-    "help_proxy": "http://example.com:10809"
+    "help_proxy": "http://example.com"
 }
