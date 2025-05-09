@@ -444,7 +444,7 @@ if __name__ == "__main__":
     while True:
         total_url_list.clear()  # reset
         proxy = "http://127.0.0.1:10809"
-        # url_proxies = "https://moje.mojieurl.com/api/v1/client/subscribe?token=7b7c590e2dbd44a1e1aceb72c4e40d6f"
+        # url_proxies = "https://msub.fengchiyx.xyz/api/v1/client/subscribe?token=7b7c590e2dbd44a1e1aceb72c4e40d6f"
         # inner_proxy = "http://172.16.102.21:10809"
         print("the proxy test service started...")
         print("getting the results of http request for urls...")
@@ -463,11 +463,16 @@ if __name__ == "__main__":
             else:
                 proxy = "http://127.0.0.1:" + str(json_data["host_port"])
             try:
+                headers = {
+                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 '
+                                '(KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36'
+                }
                 response = requests.get(
                     url_proxies,
                     verify=False,
                     timeout=20,
                     proxies={"http": proxy, "https": proxy},
+                    headers=headers
                 )
 
                 if (
